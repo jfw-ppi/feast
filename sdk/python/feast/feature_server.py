@@ -387,9 +387,8 @@ def get_app(
 
         needs_online = to in (PushMode.ONLINE, PushMode.ONLINE_AND_OFFLINE)
         needs_offline = to in (PushMode.OFFLINE, PushMode.ONLINE_AND_OFFLINE)
-        batching_active = offline_batcher is not None and needs_offline
 
-        if not batching_active:
+        if offline_batcher is None or not needs_offline:
             await _push_with_to(to)
         else:
             if needs_online:
@@ -401,7 +400,6 @@ def get_app(
                 allow_registry_cache=request.allow_registry_cache,
                 transform_on_write=request.transform_on_write,
             )
-
 
     async def _get_feast_object(
         feature_view_name: str, allow_registry_cache: bool
